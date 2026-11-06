@@ -1,3 +1,4 @@
+```
 # AI Career Genie（AI 求职助手）
 
 一个类 CTgoodjobs CABI 小精灵的多智能体（Multi-Agent）求职助手。基于 **Supervisor + 垂直业务 Agent 调度** 架构，内置简历分析、职位匹配、薪资推荐、求职问答四大能力，通过自定义 SSE 协议向 Web 端推送流式回答。
@@ -48,7 +49,7 @@ AI Career Genie 是一个部署在招聘网站侧的多智能体助手，帮助�
 
 ### 2.1 请求链路
 
-```mermaid
+​```mermaid
 flowchart TD
     FE["Web 前端（SPA）<br/>聊天 UI · 快捷回复 · 简历上传"]
     GW["API 网关<br/>鉴权 · 限流 · 路由 · 埋点日志"]
@@ -78,11 +79,11 @@ flowchart TD
     GW -.->|"SSE 事件流"| FE
     GW --> RT
     RT --> DB
-```
+​```
 
 ### 2.2 调度语义（类 LangGraph StateGraph）
 
-```mermaid
+​```mermaid
 flowchart LR
     START((START)) --> SUP["supervisor<br/>intent routing"]
     SUP -->|job-match| T1["tool: job_search"]
@@ -94,7 +95,7 @@ flowchart LR
     T3 --> GR
     T4 --> GR
     GR --> END((END<br/>exit_reason: completed))
-```
+​```
 
 ### 2.3 运行指标
 
@@ -125,7 +126,7 @@ flowchart LR
 
 ## 4. 目录结构
 
-```text
+​```text
 ai-career-genie/
 ├── README.md
 ├── pyproject.toml            # 依赖管理 (UV)
@@ -155,7 +156,7 @@ ai-career-genie/
 ├── data/                     # 职位库 / 薪酬库 / 文章语料
 └── scripts/
     └── seed_data.py          # 初始化向量库
-```
+​```
 
 ---
 
@@ -211,14 +212,14 @@ ai-career-genie/
 
 ### 6.2 提交提问
 
-```http
+​```http
 POST /gateway/api/ai-assistant/messages
 Content-Type: application/json
-```
+​```
 
 请求体（示意）：
 
-```json
+​```json
 {
   "conversationId": "16489db1-208f-43de-aec9-bc78df6a4c20",
   "query": "行政助理的市場薪酬趨勢是怎樣？",
@@ -228,22 +229,22 @@ Content-Type: application/json
     "resume_id": "optional"
   }
 }
-```
+​```
 
 ### 6.3 订阅流式回答
 
-```http
+​```http
 GET /gateway/api/ai-assistant/messages?conversationId=16489db1-208f-43de-aec9-bc78df6a4c20
-```
+​```
 
 返回 `text/event-stream`，事件定义见 [第 7 节](#7-sse-事件协议)。
 
 ### 6.4 简历上传
 
-```http
+​```http
 POST /gateway/member/upload-cv/all
 Content-Type: multipart/form-data
-```
+​```
 
 > 上传后由后端任务异步写入知识库，供求职类 Agent 检索使用。
 
@@ -262,7 +263,7 @@ Content-Type: multipart/form-data
 
 完整示例（对齐抓包结构）：
 
-```json
+​```json
 {"type": "session_started", "session_id": "16489db1-208f-43de-aec9-bc78df6a4c20", "mode": "production"}
 {"type": "message", "delta": "想了解行政助理嘅市場薪酬趨勢？", "session_id": "16489db1-208f-43de-aec9-bc78df6a4c20"}
 {"type": "turn_completed",
@@ -290,7 +291,7 @@ Content-Type: multipart/form-data
   ],
   "tracked_modules_used": ["salary-recommender"]
 }
-```
+​```
 
 ---
 
@@ -298,7 +299,7 @@ Content-Type: multipart/form-data
 
 定义位置：`app/agent/system_prompts.py`
 
-```python
+​```python
 SUPERVISOR_PROMPT = """
 你是 AI Career Genie 的调度主管（Supervisor）。
 你的职责：
@@ -326,7 +327,7 @@ MODULE_ROUTING = {
     "salary-recommender": "基于职位、年资、地区，检索薪酬库并输出市场薪酬区间与趋势。",
     "info-support": "检索站内文章知识库（RAG），基于检索结果回答，并附引用来源。",
 }
-```
+​```
 
 ---
 
@@ -336,33 +337,33 @@ MODULE_ROUTING = {
 
 ### 9.1 安装依赖
 
-```bash
+​```bash
 uv sync
-```
+​```
 
 ### 9.2 配置环境变量
 
-```bash
+​```bash
 cp .env.example .env
-```
+​```
 
 填入 `LLM_API_KEY`、向量库连接等参数，详见 [第 10 节](#10-配置说明)。
 
 ### 9.3 初始化知识库
 
-```bash
+​```bash
 python scripts/seed_data.py
-```
+​```
 
 ### 9.4 启动服务
 
-```bash
+​```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
+​```
 
 ### 9.5 验证
 
-```bash
+​```bash
 # 提交提问
 curl -X POST http://localhost:8000/gateway/api/ai-assistant/messages \
   -H "Content-Type: application/json" \
@@ -370,7 +371,7 @@ curl -X POST http://localhost:8000/gateway/api/ai-assistant/messages \
 
 # 订阅 SSE
 curl -N "http://localhost:8000/gateway/api/ai-assistant/messages?conversationId=test-001"
-```
+​```
 
 ---
 
@@ -378,7 +379,7 @@ curl -N "http://localhost:8000/gateway/api/ai-assistant/messages?conversationId=
 
 配置文件模板：`.env.example`
 
-```ini
+​```ini
 # LLM
 LLM_PROVIDER=openai            # openai | ollama | anthropic
 LLM_API_BASE=https://api.deepseek.com/v1
@@ -401,7 +402,7 @@ EMBEDDING_MODEL=text-embedding-3-small
 # 可观测
 LANGFUSE_ENABLED=false
 LANGFUSE_HOST=https://cloud.langfuse.com
-```
+​```
 
 ---
 
@@ -428,3 +429,4 @@ LANGFUSE_HOST=https://cloud.langfuse.com
 ## 13. 免责声明
 
 本项目为**技术学习与自研参考**，参考了 CTgoodjobs「CABI / AI Career Genie」的对外接口特征（Supervisor 调度、SSE 自定义事件、模块路由、token 按角色统计）与产品形态。不包含其任何专有代码、数据或模型权重；请在自行构建时确保数据合规与隐私保护。
+```
