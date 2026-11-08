@@ -129,4 +129,4 @@ class Settings(BaseSettings):
 
 
 # 将配置创建成单例（Singleton）对象
-settings = Settings()
+config = Settings()
