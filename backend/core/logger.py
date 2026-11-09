@@ -7,16 +7,16 @@ import sys
 
 from loguru import logger
 
-from backend.config import settings, BASE_DIR
+from backend.config import config, BASE_DIR
 
 LOG_DIR = BASE_DIR / 'logs'
 
 
 def setup_logger(
     *,
-    console_level=settings.console_log_level,
-    file_log_level=settings.file_log_level,
-    log_file=settings.default_log_file,
+    console_level=config.console_log_level,
+    file_log_level=config.file_log_level,
+    log_file=config.default_log_file,
     rotation='100 MB',
     retention='30 days',
     compression='zip',
