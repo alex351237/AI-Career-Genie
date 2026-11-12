@@ -9,7 +9,7 @@ import json
 import logging
 from typing import Any
 
-import redis
+import redis.asyncio as redis
 
 from backend.config import config, BASE_DIR
 from backend.core.logger import logger
